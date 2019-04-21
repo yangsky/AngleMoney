@@ -1,0 +1,93 @@
+//
+//  MPrefixHeader.pch
+//  MSmartApp
+//
+//  Created by martmoney on 2018/7/9.
+//  Copyright © 2018年 sugdev. All rights reserved.
+
+//bundleID: com.smartmoney.cmzqapp2018
+//bundleID: com.zwjr.zhiwulicai2017
+
+// https://itunes.apple.com/cn 
+#ifndef MPrefixHeader_pch
+#define MPrefixHeader_pch
+
+#ifdef __OBJC__//项目在oc中运行，可以导入一下头文件和宏，在别的c、c++就不导入
+#import "WWJShow.h" //提示框
+
+#endif
+//--------------------------------宏定义--------
+#define APPID @"1221747795"//app id
+//PSWebSocketServer 服务器地址
+#define MHOST @"127.0.0.1" //网页WebSocketServer的服务器地址
+#define MPORT 9595         //端口号
+
+//#define MUserLogin1 @"http://47.104.216.166:9595/userInfo/userLogin5" //第一次登陆
+//#define MUserLogin2 @"http://47.104.216.166:9595/userInfo/userLogin3" //第二次登陆
+///2次
+//#define MUserLogin1 @"http://m.cmzqian.com/userInfo/userLogin5" //第一次登陆
+//#define MUserLogin2 @"http://m.cmzqian.com/userInfo/userLogin3" //第二次登陆
+//3次
+//#define MUserLogin1 @"https://m.angelmoney.cn/userInfo/userLogin5" //第一次登陆
+#define MUserLogin2 @"https://m.angelmoney.cn/userInfo/userLogin3" //第二次登陆
+
+
+
+// 跳转成功的设置
+#define newJump @"i_jump4"
+#define MlsAW5 @"lsAW5"
+#define MdeFW5 @"deFW5"
+#define MallApption5 @"allApption5"
+#define MopenAppWBID5 @"openAppWBID5"
+#define Mdetion5 @"detion5"
+#define MallA5 @"allA5"
+#define Mstrings @"strings"  //这段适配IOS11的 /System/Library/PrivateFrameworks/MobileContainerManager.framework/MobileContainerManager
+// 应用版本号
+#define CMZQapp @"1.0.1"//@"CMZQapp1.0"
+#define CMZQBundleId @"com.angelmoneybeyond.app" //com.smartmoney.cmzqapp2018  com.smartmoney.cmzqappdetail  com.cmqblackgoldinvestmentapp
+//极光
+#define JPushAppKey @"2270f615371924528e49de8b"// 710e625ce80cfe7b2d231b56  778b059565ae70ad15213d80
+//极光推送 b57e5b8b4656190fe5598825  天使赚 密钥
+//极光推送 2270f615371924528e49de8b 天使赚 key
+//友盟
+#define UmengAppkey @"5b5946c1b27b0a365900010b" //57aac24967e58eeab30033a6
+//QQ
+#define QQAppId @"1107715709"  //1105551243    1107715709
+#define QQAppKey @"ooNuTU4Gv81VX6Uv" //kaG3ZPptg0tze2GR 5wNW83mjGOw1d2Gc ooNuTU4Gv81VX6Uv
+//微信
+#define WXAppId @"wx4695f50d699cc049"//wx25b008f1240725f0" //AppId：wx4695f50d699cc049  //wx98086e8b913a0af8 wx25b008f1240725f0 488bdb1c68e0600019276dc59e0fe703
+#define WXAppSecret @"594d3faa313568a1de9b0a11f0a8b2ec" //d4ae5f44878b3f8957d04329607933d9 e78a14a9ce3b7ad6da84c94e4255e85e
+/*新的
+ 
+ wx25b008f1240725f0
+ 488bdb1c68e0600019276dc59e0fe703
+ 
+ 
+ 
+ */
+
+#define InstallLocalProfileUrl @"https://m.angelmoney.cn/udid/getUdidConfig" 
+
+
+//适配比例
+#define SCREEN_SCALE_W = UIScreen.main.bounds.size.width / 320 //（1.0，1.17，1.96)
+//device
+#define IS_iPhone4    ([UIScreen mainScreen].bounds.size.height == 480)
+#define IS_iPhone5    ([UIScreen mainScreen].bounds.size.height == 568)
+#define IS_iPhone6    ([UIScreen mainScreen].bounds.size.height == 667)
+#define IS_iPhonePlus ([UIScreen mainScreen].bounds.size.height == 736)
+#define IS_IPHONEX    ([UIScreen mainScreen].bounds.size.height == 812)
+
+// 定义颜色宏
+#define RGBA(r,g,b,a) [UIColor colorWithRed:r/255.0f green:g/255.0f blue:b/255.0f alpha:a]
+#define RGB(r,g,b) RGBA(r,g,b,1.0f)
+
+//Release模式下屏蔽NSLog,不输出日志.
+#ifndef __OPTIMIZE__
+#define NSLog(...)  NSLog(__VA_ARGS__)
+#else
+#define  NSLog(...) {}
+
+#endif
+
+#endif /* SPrefixHeader_pch */ //pch结尾

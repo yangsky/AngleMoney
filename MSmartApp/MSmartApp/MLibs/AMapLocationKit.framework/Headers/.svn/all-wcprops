@@ -1,0 +1,53 @@
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/newYYY/!svn/ver/2/trunk/newYYY/AMapLocationKit.framework/Headers
+END
+AMapGeoFenceRegionObj.h
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/newYYY/!svn/ver/2/trunk/newYYY/AMapLocationKit.framework/Headers/AMapGeoFenceRegionObj.h
+END
+AMapLocationCommonObj.h
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/newYYY/!svn/ver/2/trunk/newYYY/AMapLocationKit.framework/Headers/AMapLocationCommonObj.h
+END
+AMapLocationVersion.h
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/newYYY/!svn/ver/2/trunk/newYYY/AMapLocationKit.framework/Headers/AMapLocationVersion.h
+END
+AMapLocationKit.h
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/newYYY/!svn/ver/2/trunk/newYYY/AMapLocationKit.framework/Headers/AMapLocationKit.h
+END
+AMapLocationManager.h
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/newYYY/!svn/ver/2/trunk/newYYY/AMapLocationKit.framework/Headers/AMapLocationManager.h
+END
+AMapGeoFenceError.h
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/newYYY/!svn/ver/2/trunk/newYYY/AMapLocationKit.framework/Headers/AMapGeoFenceError.h
+END
+AMapGeoFenceManager.h
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/newYYY/!svn/ver/2/trunk/newYYY/AMapLocationKit.framework/Headers/AMapGeoFenceManager.h
+END
+AMapLocationRegionObj.h
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/newYYY/!svn/ver/2/trunk/newYYY/AMapLocationKit.framework/Headers/AMapLocationRegionObj.h
+END
