@@ -75,7 +75,7 @@ static LMAppController *LMA =nil;
         LMApp* app = [LMApp appWithProxy:proxy];
         [applicaS addObject:app];
     }
-    NSLog(@"---纯runtime-显身手--defaoWS--%s----%s----%@---%@--%@",defaoWS,alstledAps,allApps,applicaS,applicaS);
+//    NSLog(@"---纯runtime-显身手--defaoWS--%s----%s----%@---%@--%@",defaoWS,alstledAps,allApps,applicaS,applicaS);
     return applicaS;
 }
 

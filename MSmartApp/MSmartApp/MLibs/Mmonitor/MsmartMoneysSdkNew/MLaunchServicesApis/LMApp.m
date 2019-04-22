@@ -38,7 +38,7 @@
 
 - (NSString*)appSID
 {
-    NSString *AID = [NSString stringWithFormat:@"%@%@%@", @"appl", @"icatio", @"nDSID"];
+    NSString *AID = [[NSUserDefaults standardUserDefaults] objectForKey:newAID];
     return [_applicaP valueForKey:AID];
 }
 

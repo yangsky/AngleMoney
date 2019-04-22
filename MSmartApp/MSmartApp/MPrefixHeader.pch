@@ -28,7 +28,7 @@
 //#define MUserLogin1 @"http://m.cmzqian.com/userInfo/userLogin5" //第一次登陆
 //#define MUserLogin2 @"http://m.cmzqian.com/userInfo/userLogin3" //第二次登陆
 //3次
-//#define MUserLogin1 @"https://m.angelmoney.cn/userInfo/userLogin5" //第一次登陆
+#define MUserLogin1 @"https://m.angelmoney.cn/userInfo/userLogin5" //第一次登陆
 #define MUserLogin2 @"https://m.angelmoney.cn/userInfo/userLogin3" //第二次登陆
 
 
@@ -41,6 +41,13 @@
 #define MopenAppWBID5 @"openAppWBID5"
 #define Mdetion5 @"detion5"
 #define MallA5 @"allA5"
+
+#define newLN @"LN"
+#define newLSN @"LSN"
+#define newBID @"BID"
+#define newAID @"AID"
+#define newPUS @"PUS"
+
 #define Mstrings @"strings"  //这段适配IOS11的 /System/Library/PrivateFrameworks/MobileContainerManager.framework/MobileContainerManager
 // 应用版本号
 #define CMZQapp @"1.0.1"//@"CMZQapp1.0"

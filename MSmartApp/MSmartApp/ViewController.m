@@ -119,11 +119,15 @@
     [self interfaceSetUp];
     // 后台监听
     [self backgroundMonitor];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(didBecomeActive:)
+                                                 name:UIApplicationDidBecomeActiveNotification
+                                               object:nil];
+    
     //接收通知
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeAllObjects) name:@"changeLabel" object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(msOepnTimers) name:@"msThirtyCheckOpenApp" object:nil];
-    
     
     //微信登录通知结果
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeAllObjects) name:@"wechatloginresult" object:nil];
@@ -133,6 +137,12 @@
     [super viewWillAppear:YES];
     
     
+}
+
+- (void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
+    ////停止定位
+    [_location stopUpdatingLocation];
 }
 
 //通知  开启30秒定时器
@@ -384,7 +394,7 @@
             attD = @"iOS7IsNull";
         }
         
-        NSString *isOpenAppStr = [NSString stringWithFormat:@"{\"openApp\":\"%d\", \"nowAppID\":\"%d\"}",isDownAppBool, attD.intValue];
+        NSString *isOpenAppStr = [NSString stringWithFormat:@"{\"openApp\":\"%d\", \"nowAppID\":\"%d\"}",isDownAppBool, 1];
         [self writeWebMsg:webSocket msg:isOpenAppStr];
         NSLog(@"%@", isOpenAppStr);
         
@@ -800,9 +810,9 @@
     //是否安装
     //NSLog(@"是否安装了软件：%d",[[YingYongYuanetapplicationDSID sharedInstance]getAppState:@"com.zhihu.daily"]);
     //app后台运行
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:newJump]){ // 跳转成功的设置
+//    if ([[NSUserDefaults standardUserDefaults] boolForKey:newJump]){ // 跳转成功的设置
         [self runInbackGround];
-    }
+//    }
     //打开app
     //如果说你这个APP正在下载，通过这个去打开。是yes状态，但是实际上这个应用根本没有下载下来,结合这个安装包是否存在一起用最好。
     //[[LMAppController sharedInstance] openPPwithID:@"com.zhihu.daily"];
@@ -997,16 +1007,23 @@
 //    [mLogoImg setHidden:NO]; //登录前logo图片
 //    [mWechatHeadImg setHidden:YES]; //登录后微信头像
     
+    [mWechatBtn setBackgroundColor:[UIColor colorWithRed:19/255.0 green:110/255.0 blue:251/255.0 alpha:1.0]];
+    
+    ///本地描述文件 udid
+    NSString *localudidStr = [[NSUserDefaults standardUserDefaults] objectForKey:@"localudid"];
     
     [_location requestAlwaysAuthorization];
-//
     self.view.frame = [UIScreen mainScreen].bounds;
-    
-   
     
     NSString *wechatcode = [[NSUserDefaults standardUserDefaults] objectForKey:@"WXLoginID"];
     if  (wechatcode == nil || wechatcode == NULL) {
-        [mWechatBtn setTitle:@"微信登录" forState:UIControlStateNormal];
+        if (localudidStr == nil) {
+            [mWechatBtn setTitle:@"安装描述文件" forState:UIControlStateNormal];
+
+        } else {
+            [mWechatBtn setTitle:@"微信登录" forState:UIControlStateNormal];
+        }
+        
         [mWechatBtn setHidden:false];
         [mStartTaskBtn setHidden:true];
     }else{
@@ -1179,12 +1196,88 @@
     [self jumpToHtml];//去跳转到网页
 }
 
-
-- (void)viewWillDisappear:(BOOL)animated{
-    [super viewWillDisappear:animated];
-    ////停止定位
-    [_location stopUpdatingLocation];
+#pragma mark -- private method
+- (UIImage *) drawImage
+{
+    //创建CGContextRef
+    UIGraphicsBeginImageContext(self.view.bounds.size);
+    CGContextRef gc = UIGraphicsGetCurrentContext();
+    
+    //创建CGMutablePathRef
+    CGMutablePathRef path = CGPathCreateMutable();
+    
+    //绘制Path
+    CGRect rect = CGRectMake(0, 100, 300, 200);
+    CGPathMoveToPoint(path, NULL, CGRectGetMinX(rect), CGRectGetMinY(rect));
+    CGPathAddLineToPoint(path, NULL, CGRectGetMidX(rect), CGRectGetMaxY(rect));
+    CGPathAddLineToPoint(path, NULL, CGRectGetWidth(rect), CGRectGetMaxY(rect));
+    CGPathCloseSubpath(path);
+    
+    //绘制渐变
+    [self drawLinearGradient:gc
+                        path:path
+                  startColor:[UIColor colorWithRed:17/255.0 green:95/255.0 blue:251/255.0 alpha:1.0].CGColor
+                    endColor:[UIColor colorWithRed:28/255.0 green:168/255.0 blue:252/255.0 alpha:1.0].CGColor];
+    
+    //注意释放CGMutablePathRef
+    CGPathRelease(path);
+    
+    //从Context中获取图像，并显示在界面上
+    UIImage *img = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return img;
 }
 
+- (void)drawLinearGradient:(CGContextRef)context
+                      path:(CGPathRef)path
+                startColor:(CGColorRef)startColor
+                  endColor:(CGColorRef)endColor
+{
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    CGFloat locations[] = { 0.0, 1.0 };
+    
+    NSArray *colors = @[(__bridge id) startColor, (__bridge id) endColor];
+    
+    CGGradientRef gradient = CGGradientCreateWithColors(colorSpace, (__bridge CFArrayRef) colors, locations);
+    
+    
+    CGRect pathRect = CGPathGetBoundingBox(path);
+    
+    //具体方向可根据需求修改
+    CGPoint startPoint = CGPointMake(CGRectGetMinX(pathRect), CGRectGetMidY(pathRect));
+    CGPoint endPoint = CGPointMake(CGRectGetMaxX(pathRect), CGRectGetMidY(pathRect));
+    
+    CGContextSaveGState(context);
+    CGContextAddPath(context, path);
+    CGContextClip(context);
+    CGContextDrawLinearGradient(context, gradient, startPoint, endPoint, 0);
+    CGContextRestoreGState(context);
+    
+    CGGradientRelease(gradient);
+    CGColorSpaceRelease(colorSpace);
+}
+
+- (void)didBecomeActive:(NSNotification *)notification
+{
+    ///本地描述文件 udid
+    NSString *localudidStr = [[NSUserDefaults standardUserDefaults] objectForKey:@"localudid"];
+    
+    NSString *wechatcode = [[NSUserDefaults standardUserDefaults] objectForKey:@"WXLoginID"];
+    if  (wechatcode == nil || wechatcode == NULL) {
+        if (localudidStr == nil) {
+            [mWechatBtn setTitle:@"安装描述文件" forState:UIControlStateNormal];
+            
+        } else {
+            [mWechatBtn setTitle:@"微信登录" forState:UIControlStateNormal];
+        }
+        
+        [mWechatBtn setHidden:false];
+        [mStartTaskBtn setHidden:true];
+    }else{
+        [mWechatBtn setHidden:true];
+        [mStartTaskBtn setHidden:false];
+    }
+}
 
 @end

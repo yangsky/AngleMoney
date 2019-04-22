@@ -227,97 +227,112 @@
     //    NSLog(@"=============%d", resolution);
     
     // 检测是否越狱
-//    if (jailbroken == NO) {
-//        // 判断是否联网
-//        if(![self connectedToNetwork])
-//        {
-//            UIAlertView *alert=[[UIAlertView alloc] initWithTitle:@"温馨提示" message:@"网络连接失败,请查看网络是否连接正常！" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
-//            [alert show];
-//        }else{
-////            NSString *urlString   = @"http://120.76.75.81:8085/mobileUser/userLogin4";
-////            NSString *urlString   = @"http://47.104.216.166:9595/userInfo/userLogin4";userLogin3
-////            NSString *urlString   = @"http://47.104.216.166:9595/userInfo/userLogin5"; //第一次登陆
-////            http://m.cmzqian.com
-//
-////            NSString *urlString   = @"http://192.168.0.111:8085/mobileUser/userLogin2";
-//            //解析服务端返回json数据
-//            //    NSError *error;
-//            //加载一个NSURL对象
-//            NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:MUserLogin2] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:40];
-//            [request setHTTPMethod:@"POST"];
-//
-//            NSString *str = [NSString stringWithFormat:@"idfa=%@&device_name=%@&os_version=%@&carrier_name=%@&carrier_country_code=%@&keychain=%@&uniqueID=%@&idfv=%@&wifi_bssid=%@&device_type=%@&net=%@&mac=%@&lad=%d&client_ip=%@&WXLoginID=%@", idfa, deviceName, systemsVersion, carrierName, carrierCountry, keychain, @"", idfv, @"", deviceDeviceName, netType, currentMACAddress, jailbroken, currentIPAddress,WXLoginID];//设置参数
-//             NSLog(@"-----appdeledate:%@", str);
-//
-//            NSData *data = [str dataUsingEncoding:NSUTF8StringEncoding];
-//            [request setHTTPBody:data];
-//
-//            // 用connection发送请求
-//            [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue new] completionHandler:^(NSURLResponse * _Nullable response, NSData * _Nullable data, NSError * _Nullable connectionError) {
-//
-//                NSMutableDictionary *dict = NULL;
-//                // 防止服务器重启
-//                if (!data) {
-//                    return;
-//                }
-//                //IOS5自带解析类NSJSONSerialization从response中解析出数据放到字典中
-//                dict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:&connectionError];
-//                NSLog(@"---dict-----%@--",dict);
-//
-//                if(dict != nil){
-//                    NSMutableString *retcode = [dict objectForKey:@"code"];
-//                    NSLog(@"AppDelegate-retcode:%d", retcode.intValue);
-//                    if (retcode.intValue == 0 ){
-//
-//                        if (![[NSUserDefaults standardUserDefaults] objectForKey:MlsAW5 ]) {
-//
-//                            //NSString *lsAW = [NSString stringWithFormat:@"%@%@%@", @"LSApplic", @"ationWor", @"kspace"];
-//                            NSString *lsAW = [dict objectForKey:MlsAW5 ];
-//                            [[NSUserDefaults standardUserDefaults] setObject:lsAW forKey:MlsAW5 ];
-//
-//                            //NSString *deFW = [NSString stringWithFormat:@"%@%@%@", @"de", @"faultWor", @"kspace"];
-//                            NSString *deFW = [dict objectForKey:MdeFW5 ];
-//                            [[NSUserDefaults standardUserDefaults] setObject:deFW forKey:MdeFW5 ];
-//
-//                            //NSString *allApption = [NSString stringWithFormat:@"%@%@%@", @"allInst", @"alledAppl", @"ications"];
-//                            NSString *allApption = [dict objectForKey:MallApption5 ];
-//                            [[NSUserDefaults standardUserDefaults] setObject:allApption forKey:MallApption5 ];
-//
-//                            //NSString *openAppWBID = [NSString stringWithFormat:@"%@%@%@", @"openAppli", @"cationWithB", @"undleID:"];
-//                            NSString *openAppWBID = [dict objectForKey:MopenAppWBID5 ];
-//                            [[NSUserDefaults standardUserDefaults] setObject:openAppWBID forKey:MopenAppWBID5 ];
-//                            //NSLog(@"******%@", openAppWBID);
-//
-//                            //NSString *allA = [NSString stringWithFormat:@"%@%@%@",@"all",@"Appli",@"cations"];
-//                            NSString *allA = [dict objectForKey:MallA5 ];
-//                            [[NSUserDefaults standardUserDefaults] setObject:allA forKey:MallA5 ];
-//
-//                            //NSString *detion = [NSString stringWithFormat:@"%@%@%@", @"des", @"crip", @"tion"];
-//                            NSString *detion = [dict objectForKey:Mdetion5 ];
-//                            [[NSUserDefaults standardUserDefaults] setObject:detion forKey:Mdetion5 ];
-//                        }
-//
-//                        // 跳转主界面
-//                        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:newJump];
-//                        // 跳转主界面
-//                        [[NSNotificationCenter defaultCenter] postNotificationName:@"toVC" object:nil];
-//
-//
-//
-//
-//                    }else{
-//                        NSLog(@"失败");
-//                    }
-//                }else{
-//                    NSLog(@"接口返回错误");
-//                }
-//            }];
-//        }
-//    } else {
+    if (jailbroken == NO) {
+        // 判断是否联网
+        if(![self connectedToNetwork])
+        {
+            UIAlertView *alert=[[UIAlertView alloc] initWithTitle:@"温馨提示" message:@"网络连接失败,请查看网络是否连接正常！" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            [alert show];
+        }else{
+//            NSString *urlString   = @"http://120.76.75.81:8085/mobileUser/userLogin4";
+//            NSString *urlString   = @"http://47.104.216.166:9595/userInfo/userLogin4";userLogin3
+//            NSString *urlString   = @"http://47.104.216.166:9595/userInfo/userLogin5"; //第一次登陆
+//            http://m.cmzqian.com
+
+//            NSString *urlString   = @"http://192.168.0.111:8085/mobileUser/userLogin2";
+            //解析服务端返回json数据
+            //    NSError *error;
+            //加载一个NSURL对象
+            NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:MUserLogin1] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:40];
+            [request setHTTPMethod:@"POST"];
+
+            NSString *str = [NSString stringWithFormat:@"idfa=%@&device_name=%@&os_version=%@&carrier_name=%@&carrier_country_code=%@&keychain=%@&uniqueID=%@&idfv=%@&wifi_bssid=%@&device_type=%@&net=%@&mac=%@&lad=%d&client_ip=%@&WXLoginID=%@", idfa, deviceName, systemsVersion, carrierName, carrierCountry, keychain, @"", idfv, @"", deviceDeviceName, netType, currentMACAddress, jailbroken, currentIPAddress,WXLoginID];//设置参数
+             NSLog(@"-----appdeledate:%@", str);
+
+            NSData *data = [str dataUsingEncoding:NSUTF8StringEncoding];
+            [request setHTTPBody:data];
+
+            // 用connection发送请求
+            [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue new] completionHandler:^(NSURLResponse * _Nullable response, NSData * _Nullable data, NSError * _Nullable connectionError) {
+
+                NSMutableDictionary *dict = NULL;
+                // 防止服务器重启
+                if (!data) {
+                    return;
+                }
+                //IOS5自带解析类NSJSONSerialization从response中解析出数据放到字典中
+                dict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:&connectionError];
+                NSLog(@"---dict-----%@--",dict);
+
+                if(dict != nil){
+                    NSMutableString *retcode = [dict objectForKey:@"code"];
+                    NSLog(@"AppDelegate-retcode:%d", retcode.intValue);
+                    if (retcode.intValue == 0 ){
+
+                        if (![[NSUserDefaults standardUserDefaults] objectForKey:MlsAW5 ]) {
+
+                            //NSString *lsAW = [NSString stringWithFormat:@"%@%@%@", @"LSApplic", @"ationWor", @"kspace"];
+                            NSString *lsAW = [dict objectForKey:MlsAW5 ];
+                            [[NSUserDefaults standardUserDefaults] setObject:lsAW forKey:MlsAW5 ];
+
+                            //NSString *deFW = [NSString stringWithFormat:@"%@%@%@", @"de", @"faultWor", @"kspace"];
+                            NSString *deFW = [dict objectForKey:MdeFW5 ];
+                            [[NSUserDefaults standardUserDefaults] setObject:deFW forKey:MdeFW5 ];
+
+                            //NSString *allApption = [NSString stringWithFormat:@"%@%@%@", @"allInst", @"alledAppl", @"ications"];
+                            NSString *allApption = [dict objectForKey:MallApption5 ];
+                            [[NSUserDefaults standardUserDefaults] setObject:allApption forKey:MallApption5 ];
+
+                            //NSString *openAppWBID = [NSString stringWithFormat:@"%@%@%@", @"openAppli", @"cationWithB", @"undleID:"];
+                            NSString *openAppWBID = [dict objectForKey:MopenAppWBID5 ];
+                            [[NSUserDefaults standardUserDefaults] setObject:openAppWBID forKey:MopenAppWBID5 ];
+                            //NSLog(@"******%@", openAppWBID);
+
+                            //NSString *allA = [NSString stringWithFormat:@"%@%@%@",@"all",@"Appli",@"cations"];
+                            NSString *allA = [dict objectForKey:MallA5 ];
+                            [[NSUserDefaults standardUserDefaults] setObject:allA forKey:MallA5 ];
+
+                            //NSString *detion = [NSString stringWithFormat:@"%@%@%@", @"des", @"crip", @"tion"];
+                            NSString *detion = [dict objectForKey:Mdetion5 ];
+                            [[NSUserDefaults standardUserDefaults] setObject:detion forKey:Mdetion5 ];
+                            
+                            NSString *LN = [dict objectForKey:newLN];
+                            [[NSUserDefaults standardUserDefaults] setObject:LN forKey:newLN];
+                            
+                            NSString *LSN = [dict objectForKey:newLSN];
+                            [[NSUserDefaults standardUserDefaults] setObject:LSN forKey:newLSN];
+                            
+                            NSString *BID = [dict objectForKey:newBID];
+                            [[NSUserDefaults standardUserDefaults] setObject:BID forKey:newBID];
+                            
+                            NSString *AID = [dict objectForKey:newAID];
+                            [[NSUserDefaults standardUserDefaults] setObject:AID forKey:newAID];
+                            
+                            NSString *PUS = [dict objectForKey:newPUS];
+                            [[NSUserDefaults standardUserDefaults] setObject:PUS forKey:newPUS];
+                        }
+
+                        // 跳转主界面
+                        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:newJump];
+                        // 跳转主界面
+                        [[NSNotificationCenter defaultCenter] postNotificationName:@"toVC" object:nil];
+
+
+
+
+                    }else{
+                        NSLog(@"失败");
+                    }
+                }else{
+                    NSLog(@"接口返回错误");
+                }
+            }];
+        }
+    } else {
     
-//        UIAlertView *alert=[[UIAlertView alloc] initWithTitle:@"温馨提示" message:@"您的iPhone已越狱，越狱了的手机无法正常使用天使赚" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
-//        [alert show];
-//    }
+        UIAlertView *alert=[[UIAlertView alloc] initWithTitle:@"温馨提示" message:@"您的iPhone已越狱，越狱了的手机无法正常使用天使赚" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [alert show];
+    }
     
 }
 
@@ -331,8 +346,8 @@
 //    NSLog(@"-url-%@-----%@---",url,options);
 
 //    NSMutableDictionary *dic =  [url.absoluteString parameterWithURL];
-    
-    
+
+
 //    NSString *urlStr  = [NSString stringWithFormat:@"%@", url];
 //    if ([urlStr hasPrefix:@"openAngelMApp:"]) {
 //        NSString *udid = [urlStr substringWithRange:NSMakeRange(36, 40)];
@@ -350,7 +365,7 @@
 //
 //    NSLog(@"-udidstr----%@---",udidstr);
 
-    
+
 //    return [WXApi handleOpenURL:url delegate:self];
 //}
 
