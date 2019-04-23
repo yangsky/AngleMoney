@@ -62,7 +62,6 @@
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="S9r-PX-zk6">
                                         <rect key="frame" x="51" y="712" width="312" height="50"/>
-                                        <color key="backgroundColor" red="0.93803256750106812" green="0.5391886830329895" blue="0.39601573348045349" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="50" id="68P-am-wdh"/>
                                         </constraints>
@@ -146,6 +145,6 @@
     <resources>
         <image name="M180" width="180" height="180"/>
         <image name="MSHomeBgImg" width="375" height="667"/>
-        <image name="mStarTaskB" width="312" height="52"/>
+        <image name="mStarTaskB" width="312.5" height="52"/>
     </resources>
 </document>

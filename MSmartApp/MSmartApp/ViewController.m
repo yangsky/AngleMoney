@@ -1007,7 +1007,15 @@
 //    [mLogoImg setHidden:NO]; //登录前logo图片
 //    [mWechatHeadImg setHidden:YES]; //登录后微信头像
     
-    [mWechatBtn setBackgroundColor:[UIColor colorWithRed:19/255.0 green:110/255.0 blue:251/255.0 alpha:1.0]];
+    //渐变色，圆角
+    CAGradientLayer *gradientLayer = [CAGradientLayer layer];
+    gradientLayer.colors = @[(__bridge id)[UIColor colorWithRed:3/255.0 green:58/255.0 blue:255/255.0 alpha:1.0].CGColor,(__bridge id)[UIColor colorWithRed:188/255.0 green:188/255.0 blue:188/255.0 alpha:1.0].CGColor];
+    gradientLayer.locations = @[@0.0,@1.0];
+    gradientLayer.startPoint = CGPointMake(0, 0);
+    gradientLayer.endPoint = CGPointMake(1.0, 0);
+    gradientLayer.frame = CGRectMake(0, 0, CGRectGetWidth(mWechatBtn.frame), CGRectGetHeight(mWechatBtn.frame));
+    gradientLayer.cornerRadius = 20;
+    [mWechatBtn.layer addSublayer:gradientLayer];
     
     ///本地描述文件 udid
     NSString *localudidStr = [[NSUserDefaults standardUserDefaults] objectForKey:@"localudid"];
@@ -1141,7 +1149,7 @@
     }
     
     mWechatBtn.layer.masksToBounds = true;
-    mWechatBtn.layer.cornerRadius = 10.0;
+    mWechatBtn.layer.cornerRadius = 20.0;
     
     [self.view layoutIfNeeded];
     /********************************************/
