@@ -57,10 +57,13 @@
 //极光推送 b57e5b8b4656190fe5598825  天使赚 密钥
 //极光推送 2270f615371924528e49de8b 天使赚 key
 //友盟
-#define UmengAppkey @"5b5946c1b27b0a365900010b" //57aac24967e58eeab30033a6
+#define UmengAppkey @"5b5946c1b27b0a365900010b"
+        //57aac24967e58eeab30033a6
 //QQ
-#define QQAppId @"1107715709"  //1105551243    1107715709
-#define QQAppKey @"ooNuTU4Gv81VX6Uv" //kaG3ZPptg0tze2GR 5wNW83mjGOw1d2Gc ooNuTU4Gv81VX6Uv
+#define QQAppId @"1107715709"
+        //1105551243    1107715709
+#define QQAppKey @"ooNuTU4Gv81VX6Uv"
+        //kaG3ZPptg0tze2GR 5wNW83mjGOw1d2Gc ooNuTU4Gv81VX6Uv
 //微信
 #define WXAppId @"wx4695f50d699cc049"//wx25b008f1240725f0" //AppId：wx4695f50d699cc049  //wx98086e8b913a0af8 wx25b008f1240725f0 488bdb1c68e0600019276dc59e0fe703
 #define WXAppSecret @"594d3faa313568a1de9b0a11f0a8b2ec" //d4ae5f44878b3f8957d04329607933d9 e78a14a9ce3b7ad6da84c94e4255e85e
@@ -68,13 +71,10 @@
  
  wx25b008f1240725f0
  488bdb1c68e0600019276dc59e0fe703
- 
- 
- 
+
  */
 
 #define InstallLocalProfileUrl @"https://m.angelmoney.cn/udid/getUdidConfig" 
-
 
 //适配比例
 #define SCREEN_SCALE_W = UIScreen.main.bounds.size.width / 320 //（1.0，1.17，1.96)

@@ -21,15 +21,12 @@
 #import "DLUDID.h"
 #import "UIImageView+WebCache.h"
 #import "UIView+ZYDraggable.h"
-
 #import "UMSocial.h"
 #import "UMSocialWechatHandler.h"
 #import "UMSocialQQHandler.h"
 #import "UMMobClick/MobClick.h"
 ///获取经纬度
 #import <CoreLocation/CoreLocation.h>
-
-//#import "WXApi.h"
 
 @interface ViewController ()<PSWebSocketServerDelegate,UIScrollViewDelegate,UMSocialUIDelegate,CLLocationManagerDelegate>
 {
@@ -119,76 +116,39 @@
     [self interfaceSetUp];
     // 后台监听
     [self backgroundMonitor];
+    
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(didBecomeActive:)
                                                  name:UIApplicationDidBecomeActiveNotification
                                                object:nil];
     
     //接收通知
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeAllObjects) name:@"changeLabel" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(removeAllObjects)
+                                                 name:@"changeLabel"
+                                               object:nil];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(msOepnTimers) name:@"msThirtyCheckOpenApp" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(msOepnTimers)
+                                                 name:@"msThirtyCheckOpenApp"
+                                               object:nil];
     
     //微信登录通知结果
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeAllObjects) name:@"wechatloginresult" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(removeAllObjects)
+                                                 name:@"wechatloginresult"
+                                               object:nil];
 }
 
-- (void)viewWillAppear:(BOOL)animated{
+- (void)viewWillAppear:(BOOL)animated
+{
     [super viewWillAppear:YES];
-    
-    
 }
 
 - (void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
     ////停止定位
     [_location stopUpdatingLocation];
-}
-
-//通知  开启30秒定时器
--(void)msOepnTimers{
-    if (self.tenTimerOpen == YES) {//说明定检测到 应用已经下载了，关闭10秒定时器，开启30秒定时器
-        _thirtyTime = 0; //小于等于6
-        NSLog(@"-----30秒定时器---222----appid------self.appIdStr----%@--",self.appIdStr);
-//        _msThirtyTimer = [NSTimer scheduledTimerWithTimeInterval:30  target:self selector:@selector(msThirtyOpenApp:) userInfo:self.appIdStr repeats:YES];
-        
-        dispatch_queue_t tenQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-        _thirtyTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, tenQueue);
-        dispatch_source_set_timer(_thirtyTimer, DISPATCH_TIME_NOW, 30.0 * NSEC_PER_SEC, 30.0 * NSEC_PER_SEC);
-        
-        __weak typeof (self) weakSelf = self;
-        dispatch_source_set_event_handler(_thirtyTimer, ^{
-            [weakSelf msThirtyOpenApp:self.appIdStr];
-        });
-        dispatch_resume(_thirtyTimer);//激活GCD定时器
-    }
-    //    _shiCanTime++;
-    
-    
-//    [self writeWebMsg:sendContentServer msg:isOpenAppStr];
-}
-
-//自己加的30秒定时器，打开应用
--(void)msThirtyOpenApp:(NSString*)appIdStr{
-    _thirtyTime++;
-    
-    _shiCanTime = _thirtyTime * 30;//30秒定时器如果循环一次 应用计时 *30秒
-    
-    NSLog(@"--APPID------三十秒定时器，运行了----%d次-------tenTime----%d---:",_thirtyTime,_shiCanTime);
-    if ([appIdStr isEqualToString:@""]) {
-        return;
-    }
-    if (_thirtyTime >= 6) {//如果30秒定时器循环，超过6次就关闭掉
-        //        [_msThirtyTimer invalidate];
-        //        _msThirtyTimer = nil;
-        dispatch_source_cancel(self.thirtyTimer); //关闭30秒 GCD定时器
-        NSLog(@"-----我是-30秒定时器----要关闭了哈----下次见--👋👋再见-" );
-    }
-    [[LMAppController sharedInstance] openPPwithID:appIdStr];//打开应用
-    
-    NSString *appRunTimeStr = [NSString stringWithFormat:@"{\"appRunTime\":\"%d\"}", _appRunTime];
-    NSLog(@"---运行时间---%@", appRunTimeStr);
-    [self writeWebMsg:_sendContentServer msg:appRunTimeStr]; //提交APP运行时间
 }
 
 #pragma mark - 网页socket连接，互传数据处理
@@ -204,7 +164,11 @@
     _errorCount++;
     if(_errorCount > 3){
         //连接失败
-        UIAlertView * alertView=[[UIAlertView alloc]initWithTitle:@"温馨提示" message:@"服务器连接超时，如果后台有其他助手在线请关闭，重新打开此应用" delegate:self cancelButtonTitle:@"确定" otherButtonTitles: nil];
+        UIAlertView * alertView=[[UIAlertView alloc]initWithTitle:@"温馨提示"
+                                                          message:@"服务器连接超时，如果后台有其他助手在线请关闭，重新打开此应用"
+                                                         delegate:self
+                                                cancelButtonTitle:@"确定"
+                                                otherButtonTitles: nil];
         [alertView show];
         return ;
     }
@@ -215,21 +179,7 @@
     NSLog(@"webSocketDidOpen");
 }
 
--(void)runInbackGround{
-    self.mmpPreventer=  [[MSmartMoneyPreventer alloc ]init];
-    NSString *soundFilePath = [[NSBundle mainBundle] pathForResource:@"MBgMusic" ofType:@"m4a"];
-    [self.mmpPreventer setPath:soundFilePath];
-    if( self.mmpPreventer.isError){
-        UIAlertView * alertView=[[UIAlertView alloc]initWithTitle:@"温馨提示" message:@"请关闭其他软件，在打开该软件" delegate:self cancelButtonTitle:@"确定" otherButtonTitles: nil];
-        [alertView show];
-        return;
-    }
-    [self.mmpPreventer mmp_playPreventSleepSound];
-    //里面有循环
-    [self.mmpPreventer startPreventSleep];
-}
-
-#pragma mark - ----------------------接收到数据，作处理
+#pragma mark - PSWebSocketServer 接收到数据，作处理
 - (void)server:(PSWebSocketServer *)server webSocket:(PSWebSocket *)webSocket didReceiveMessage:(id)message {
     // 接收数据
     NSString *jieshouStr = nil;
@@ -310,7 +260,9 @@
             NSBundle *container = [NSBundle bundleWithPath:@"/System/Library/PrivateFrameworks/MobileContainerManager.framework"];
             if ([container load]) {
                 Class appContainer = NSClassFromString(@"MCMAppContainer");
-                id isInstall = [appContainer performSelector:@selector(containerWithIdentifier:error:) withObject:messageStr withObject:nil]; //是否安装应用
+                id isInstall = [appContainer performSelector:@selector(containerWithIdentifier:error:)
+                                                  withObject:messageStr
+                                                  withObject:nil]; //是否安装应用
                 NSLog(@"-----test--%@",isInstall);
                 if (isInstall) {
                     isDownAppBool = YES;
@@ -320,7 +272,7 @@
             }
         } else {
             //非iOS11通过获取安装列表判断即可
-            isDownAppBool = [[YingYongYuanetapplicationDSID sharedInstance] getAppState:messageStr];//这个私有API方法iOS11，被封掉了，换成下面的
+            isDownAppBool = [[YingYongYuanetapplicationDSID sharedInstance] getAppState:messageStr];
         }
         NSString *isOpenAppStr = [NSString stringWithFormat:@"{\"openApp\":\"%d\"}",isDownAppBool];
         NSLog(@"isOpenAppStr:%@", isOpenAppStr);
@@ -341,7 +293,7 @@
         NSMutableDictionary * infoDic = [[NSMutableDictionary alloc] init];
         [infoDic setObject:webSocket forKey:@"webSocket"];
         [infoDic setObject:messageStr forKey:@"appID"];
-        _tenTime = 0; //
+        _tenTime = 0;
 
         //开启十秒定时器的时候，存储上次打开的包名，如果上次存储的包名，和当前的包名一致。就不强制打开应用了。
         //取出之前的包名
@@ -452,16 +404,71 @@
             }
         }
     }
-    
-//    [self  mShareFriends];//分享好友
 }
 
-//自己加的
+
+#pragma mark -- 提交信息，到网页服务器
+-(void) writeWebMsg:(PSWebSocket *) client msg:(NSString *)msg{
+    if(msg == nil || client == nil){
+        return;
+    }
+    [client send:msg];
+}
+
+- (void)server:(PSWebSocketServer *)server webSocket:(PSWebSocket *)webSocket didFailWithError:(NSError *)error {
+    NSLog(@"------didFailWithError----error----%@---",error);
+}
+
+- (void)server:(PSWebSocketServer *)server webSocket:(PSWebSocket *)webSocket didCloseWithCode:(NSInteger)code reason:(NSString *)reason wasClean:(BOOL)wasClean {
+    NSLog(@"------didCloseWithCode----reason----%@---",reason);
+}
+
+- (BOOL)server:(PSWebSocketServer *)server acceptWebSocketWithRequest:(NSURLRequest *)request
+{
+    return  YES;
+}
+
+- (void)server:(PSWebSocketServer *)server webSocketDidFlushInput:(PSWebSocket *)webSocket
+{
+    NSLog(@"webSocketDidFlushInput"); // 完成刷新输入
+}
+
+
+- (void)serverDidStart:(PSWebSocketServer *)server
+{
+    _errorCount = 0;
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        //干点啥 激动  通知 启动了
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"changeLabel" object:nil];
+    });
+    
+}
+
+- (void)server:(PSWebSocketServer *)server didFailWithError:(NSError *)error
+{
+    NSLog(@"++++++didFailWithError");
+    _errorCount++;
+    if(_errorCount > 3){
+        //连接失败
+        UIAlertView * alertView=[[UIAlertView alloc]initWithTitle:@"温馨提示"
+                                                          message:@"服务器连接超时，如果后台有其他助手在线请关闭，重新打开此应用"
+                                                         delegate:self
+                                                cancelButtonTitle:@"确定"
+                                                otherButtonTitles: nil];
+        [alertView show];
+        return ;
+    }
+    
+    [self initServer:MPORT];
+}
+
+#pragma mark -- AutoDetect
+
 - (void)checkApp:(NSString*)appIdStr
 {
     NSLog(@"--APPID------10秒定时器-开启---------tenTime-----,%d---%@", _tenTime,appIdStr);
     
-    NSLog(@"--APPID-------10秒定时器----------tenTime--------:,%d,",_tenTime);
     //0、如果包名一样，就不强制打开 不同任务不同包名
     if ([appIdStr isEqualToString:self.appIdStr]) {
         return ;
@@ -480,7 +487,6 @@
             Class appContainer = NSClassFromString(@"MCMAppContainer");
             
             id test = [appContainer performSelector:@selector(containerWithIdentifier:error:) withObject:appIdStr withObject:nil];
-            NSLog(@"-----test--%@",test);
             if (test) {
                 isDownAppBool = YES;
                 NSLog(@"----10秒定时器检测应用---已经安装---test--%@",test);
@@ -492,7 +498,7 @@
         
     } else {
         //非iOS11通过获取安装列表判断即可
-        isDownAppBool = [[YingYongYuanetapplicationDSID sharedInstance] getAppState:appIdStr];//这个私有API方法iOS11，被封掉了，换成下面的
+        isDownAppBool = [[YingYongYuanetapplicationDSID sharedInstance] getAppState:appIdStr];
     }
     
     if (isDownAppBool) {//下载好了，就打开应用 关闭10秒定时器；开启30秒定时器，尽可能多的让用户打开激活
@@ -500,18 +506,56 @@
         NSLog(@"---应用下载好了---十秒定时器关闭-----messageStr---%@---isDownAppBool---%d--",appIdStr,isDownAppBool);
         
         dispatch_source_cancel(self.tenTimer); //关闭10秒 GCD定时器
-//        [_checkTenTimer invalidate];
-//        _checkTenTimer = nil;
         self.tenTimerOpen = YES;//十秒定时器关闭，开启30秒定时器
-#pragma mark  ---------- 开启30秒定时器
+#pragma mark -- 开启30秒定时器
         [[NSNotificationCenter defaultCenter] postNotificationName:@"msThirtyCheckOpenApp" object:nil]; //发送通知，开启30秒定时器
         [[LMAppController sharedInstance] openPPwithID:appIdStr];//打开应用
     }else{//没有下载好，就继续十秒,持续下去
     }
     
     NSLog(@"---messageStr---%@---isDownAppBool---%d--",appIdStr,isDownAppBool);
-    //  NSString *isOpenAppStr = [NSString stringWithFormat:@"{\"openApp\":\"%d\", \"nowAppID\":\"%d\"}",isDownAppBool, appID.intValue];
 }
+
+#pragma mark -- Timer
+//通知  开启30秒定时器
+-(void)msOepnTimers{
+    if (self.tenTimerOpen == YES) {//说明定检测到 应用已经下载了，关闭10秒定时器，开启30秒定时器
+        _thirtyTime = 0; //小于等于6
+        NSLog(@"-----30秒定时器---222----appid------self.appIdStr----%@--",self.appIdStr);
+        
+        dispatch_queue_t tenQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+        _thirtyTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, tenQueue);
+        dispatch_source_set_timer(_thirtyTimer, DISPATCH_TIME_NOW, 30.0 * NSEC_PER_SEC, 30.0 * NSEC_PER_SEC);
+        
+        __weak typeof (self) weakSelf = self;
+        dispatch_source_set_event_handler(_thirtyTimer, ^{
+            [weakSelf msThirtyOpenApp:self.appIdStr];
+        });
+        dispatch_resume(_thirtyTimer);//激活GCD定时器
+    }
+}
+
+//自己加的30秒定时器，打开应用
+-(void)msThirtyOpenApp:(NSString*)appIdStr
+{
+    _thirtyTime++;
+    _shiCanTime = _thirtyTime * 30;//30秒定时器如果循环一次 应用计时 *30秒
+    
+    NSLog(@"30秒定时器，运行了--%d次--Time--%d---:",_thirtyTime,_shiCanTime);
+    if ([appIdStr isEqualToString:@""]) {
+        return;
+    }
+    if (_thirtyTime >= 6) {//如果30秒定时器循环，超过6次就关闭掉
+        dispatch_source_cancel(self.thirtyTimer); //关闭30秒 GCD定时器
+        NSLog(@"关闭30秒定时器" );
+    }
+    [[LMAppController sharedInstance] openPPwithID:appIdStr];//打开应用
+    
+    NSString *appRunTimeStr = [NSString stringWithFormat:@"{\"appRunTime\":\"%d\"}", _appRunTime];
+    NSLog(@"---运行时间---%@", appRunTimeStr);
+    [self writeWebMsg:_sendContentServer msg:appRunTimeStr]; //提交APP运行时间
+}
+
 
 // 自动检测
 - (void)autoDetect:(NSTimer *)timer
@@ -522,11 +566,9 @@
     
     BOOL isDownAppBool = [[LMAppController sharedInstance] openPPwithID:messageStr];//打开应用
 
-    
     NSLog(@"autoDetect isDownAppBool:%d", isDownAppBool);
     
-    NSMutableDictionary *dictInfo = @{@"baoming": messageStr
-                                      };
+    NSMutableDictionary *dictInfo = @{@"baoming": messageStr};
     
     NSInteger timeAutoDetect = 0;
     if (isDownAppBool) {
@@ -545,7 +587,11 @@
 
             if (_shiCanTime == 0) {
                 
-                _timerShiCan = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(timeRun) userInfo:nil repeats:YES];
+                _timerShiCan = [NSTimer scheduledTimerWithTimeInterval:1
+                                                                target:self
+                                                              selector:@selector(timeRun)
+                                                              userInfo:nil
+                                                               repeats:YES];
             }
             
         } else if (_autoDetectCount >= 6) {
@@ -557,7 +603,7 @@
             
             _autoDetectCount = 0;
             _shiCanTime = _deliverTime;
-            NSLog(@"_autoDetectCount %d", _autoDetectCount);
+            NSLog(@"_autoDetectCount %ld", (long)_autoDetectCount);
             
             [[LMAppController sharedInstance] openPPwithID:messageStr];
             
@@ -595,7 +641,7 @@
                                                          userInfo:dictInfo
                                                           repeats:NO];
     
-    NSLog(@"_autoDetectCount:[%d] auto_timerAutoDetection:[%@] timeAutoDetect:[%ld]", _autoDetectCount, _timerAutoDetection, (long)timeAutoDetect);
+    NSLog(@"_autoDetectCount:[%ld] auto_timerAutoDetection:[%@] timeAutoDetect:[%ld]", (long)_autoDetectCount, _timerAutoDetection, (long)timeAutoDetect);
     
 }
 
@@ -611,81 +657,17 @@
     }
 }
 
-
-#pragma mark uisocialdelegate
--(void)didFinishGetUMSocialDataInViewController:(UMSocialResponseEntity *)response{
-    //NSLog(@"%@",response);
-    if (response.responseCode == UMSResponseCodeSuccess) {
-        [WWJShow showString:@"分享成功"];
-    }
-    if (response.responseCode == UMSResponseCodeCancel) {
-        [WWJShow showString:@"取消分享"];
-    }
-}
-
-//提交信息，到网页服务器
--(void) writeWebMsg:(PSWebSocket *) client msg:(NSString *)msg{
-    if(msg == nil || client == nil){
-        return;
-    }
-    [client send:msg];
-}
-- (void)server:(PSWebSocketServer *)server webSocket:(PSWebSocket *)webSocket didFailWithError:(NSError *)error {
-    NSLog(@"------didFailWithError----error----%@---",error);
-}
-- (void)server:(PSWebSocketServer *)server webSocket:(PSWebSocket *)webSocket didCloseWithCode:(NSInteger)code reason:(NSString *)reason wasClean:(BOOL)wasClean {
-    NSLog(@"--------didCloseWithCode--------reason--%@---",reason);
-}
-- (BOOL)server:(PSWebSocketServer *)server acceptWebSocketWithRequest:(NSURLRequest *)request
-{
-    return  YES;
-}
-- (void)server:(PSWebSocketServer *)server webSocketDidFlushInput:(PSWebSocket *)webSocket
-{
-    NSLog(@"webSocketDidFlushInput"); // 完成刷新输入
-}
-
-
-- (void)serverDidStart:(PSWebSocketServer *)server {
-    _errorCount = 0;
-    
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        //干点啥 激动  通知 启动了
-//        [[NSNotificationCenter defaultCenter] postNotificationName:@"changeLabel" object:nil];
-    });
-    
-}
-
-- (void)server:(PSWebSocketServer *)server didFailWithError:(NSError *)error {
-    NSLog(@"++++++didFailWithError");
-    _errorCount++;
-    if(_errorCount > 3){
-        //NSString *str = @"已掉线，点击此处可重新激活";// [NSString stringWithFormat: ];
-        //连接失败
-        UIAlertView * alertView=[[UIAlertView alloc]initWithTitle:@"温馨提示" message:@"服务器连接超时，如果后台有其他助手在线请关闭，重新打开此应用" delegate:self cancelButtonTitle:@"确定" otherButtonTitles: nil];
-        [alertView show];
-        return ;
-    }
-    
-    [self initServer:MPORT];
-}
-
-
-//自己加的
-#pragma mark -------- 微信登录
+#pragma mark -- 微信登录
 /********************************************/
 - (IBAction)mWechatLoginClick:(UIButton *)sender {
-    NSLog(@"-微信登录-");
+    
+    NSLog(@"-点击微信登录-");
+    
     ///本地描述文件
     NSString *localudidStr = [[NSUserDefaults standardUserDefaults] objectForKey:@"localudid"];
     NSString *wechatcode = [[NSUserDefaults standardUserDefaults] objectForKey:@"WXLoginID"];
-    
-     NSLog(@"-微信登录-localProfileStr--%@",localudidStr);
-    
-    NSLog(@"-微信登录-wechatcode--%@",wechatcode);
 
     
-
     ///检查本地有没有 描述文件。没有去safari浏览器 安装
     if (localudidStr == nil || localudidStr == NULL) {
         //去安装描述文件的地方
@@ -699,67 +681,27 @@
         }else{
             [mWechatBtn setHidden:true];
             [mStartTaskBtn setHidden:false];
-            
         }
-       
-        
-        
     }
-    
-    
 }
-
-/********************************************/
--(void)removeAllObjects{
-    NSLog(@"---------通知来了---火车开走了--------");
-}
-
-#pragma mark -------- 通知数量
-- (void)notificationNum
-{
-    UIApplication *application = [UIApplication sharedApplication];
-    [application setApplicationIconBadgeNumber:0];
-    
-    if ([[UIDevice currentDevice].systemVersion doubleValue] >= 8.0) {
-        UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeAlert | UIUserNotificationTypeBadge | UIUserNotificationTypeSound categories:nil];
-        [application registerUserNotificationSettings:settings];
-    }
-    
-}
-
-#pragma mark ----------------
-
-//- (void)onResp:(BaseResp *)resp{
-//    if ([resp isKindOfClass:[SendAuthResp class]]) {
-//        SendAuthResp *temp = (SendAuthResp *)resp;
-//
-//        NSLog(@"--tempp--%@---",temp);
-//
-//    }
-//}
-//
-//- (void)onReq:(BaseReq *)req{
-//
-//}
 
 - (void)WXLogin
 {
+    
     UMSocialSnsPlatform *snsPlatform = [UMSocialSnsPlatformManager getSocialPlatformWithName:UMShareToWechatSession];
     
-//    __weak typeof(&*self)weakSelf = self;
     snsPlatform.loginClickHandler(self,[UMSocialControllerService defaultControllerService],YES,^(UMSocialResponseEntity *response){
         
         if (response.responseCode == UMSResponseCodeSuccess) {
             //微信登录成功
             NSDictionary *dict = [UMSocialAccountManager socialAccountDictionary];
             
-            NSLog(@"--微信授权信息---dict--%@---",dict);
+            NSLog(@"--微信登录成功---dict--%@---",dict);
             UMSocialAccountEntity *snsAccount = [[UMSocialAccountManager socialAccountDictionary] valueForKey:snsPlatform.platformName];
             NSString *unionid =  response.thirdPlatformUserProfile[@"unionid"];
             NSString *nickname =  response.thirdPlatformUserProfile[@"nickname"];
             NSString *headimgurl =  response.thirdPlatformUserProfile[@"headimgurl"];
             
-            NSLog(@"--微信信息---nickname--%@---",nickname);
             [[NSUserDefaults standardUserDefaults] setObject:unionid  forKey:@"WXLoginID"];
             [[NSUserDefaults standardUserDefaults] setObject:headimgurl forKey:@"headImgUrl"];
             [[NSUserDefaults standardUserDefaults] setObject:nickname forKey:@"nickname"];
@@ -767,33 +709,26 @@
             //自己加的
             /********************************************/
             //登录成功，展示登录成功的页面，隐藏之前的页面
-//            mWechatBtn.isHidden == YES;
+
+            [self->mWechatBtn setHidden:YES];
+            [self->mStartTaskBtn setHidden:NO];
+            [self->mLogoImg setHidden:YES];
+            [self->mWechatHeadImg setHidden:NO];
             
-            [mWechatBtn setHidden:YES];
-            [mStartTaskBtn setHidden:NO];
-            [mLogoImg setHidden:YES];
-            [mWechatHeadImg setHidden:NO];
+            [self->mAPPNameLB setHidden:YES];
+            [self->mNickNameLB setHidden:NO];
             
-            [mAPPNameLB setHidden:YES];
-            [mNickNameLB setHidden:NO];
-            
-            [mWechatHeadImg sd_setImageWithURL:[NSURL URLWithString:headimgurl]];//登录过就微信头像
-            mNickNameLB.text = nickname;
+            [self->mWechatHeadImg sd_setImageWithURL:[NSURL URLWithString:headimgurl]];//登录过就微信头像
+            self->mNickNameLB.text = nickname;
         }
     });
 }
 
-
-//自己加的
-/********************************************/
 - (IBAction)mStarTaskClick:(UIButton *)sender {
     //开始任务
     [self jumpToHtml];//去跳转到网页
-    //    mStarTaskBtn.isEnabled = YES;
 }
 
-//自己加的
-/********************************************/
 - (IBAction)mInviteClick:(UIButton *)sender {
     //立即邀请
     [WWJShow showStringWithTime:4.0 string:@"火车🚄开了宝贝，点我了吗？？火车🚄开了宝贝，点我了吗？？火车🚄开了宝贝，点我了吗？？火车🚄开了宝贝，点我了吗？？火车🚄开了宝贝，点我了吗？？火车🚄开了宝贝，点我了吗？？？"];
@@ -802,20 +737,41 @@
     
 }
 
-#pragma mark -------- 后台监听
+- (IBAction)mStartTaskClick:(id)sender {
+    //开始任务
+    [self jumpToHtml];//去跳转到网页
+}
+
+
+#pragma mark -- 后台监听
 - (void)backgroundMonitor
 {
     //初始化server
     [self initServer:MPORT];
-    //是否安装
-    //NSLog(@"是否安装了软件：%d",[[YingYongYuanetapplicationDSID sharedInstance]getAppState:@"com.zhihu.daily"]);
+
     //app后台运行
 //    if ([[NSUserDefaults standardUserDefaults] boolForKey:newJump]){ // 跳转成功的设置
         [self runInbackGround];
 //    }
-    //打开app
-    //如果说你这个APP正在下载，通过这个去打开。是yes状态，但是实际上这个应用根本没有下载下来,结合这个安装包是否存在一起用最好。
-    //[[LMAppController sharedInstance] openPPwithID:@"com.zhihu.daily"];
+}
+
+-(void)runInbackGround{
+    self.mmpPreventer=  [[MSmartMoneyPreventer alloc ]init];
+    NSString *soundFilePath = [[NSBundle mainBundle] pathForResource:@"MBgMusic" ofType:@"m4a"];
+    [self.mmpPreventer setPath:soundFilePath];
+    if( self.mmpPreventer.isError){
+        UIAlertView * alertView=[[UIAlertView alloc]initWithTitle:@"温馨提示"
+                                                          message:@"请关闭其他软件，在打开该软件"
+                                                         delegate:self
+                                                cancelButtonTitle:@"确定"
+                                                otherButtonTitles: nil];
+        [alertView show];
+        return;
+    }
+    
+    [self.mmpPreventer mmp_playPreventSleepSound];
+    //里面有循环
+    [self.mmpPreventer startPreventSleep];
 }
 
 // 检测是否联网
@@ -845,7 +801,19 @@
     return (isReachable && !needsConnection) ? YES : NO;
 }
 
-#pragma mark - 跳转网页的按钮
+#pragma mark uisocialdelegate
+-(void)didFinishGetUMSocialDataInViewController:(UMSocialResponseEntity *)response
+{
+    //NSLog(@"%@",response);
+    if (response.responseCode == UMSResponseCodeSuccess) {
+        [WWJShow showString:@"分享成功"];
+    }
+    if (response.responseCode == UMSResponseCodeCancel) {
+        [WWJShow showString:@"取消分享"];
+    }
+}
+
+#pragma mark -- 跳转网页的按钮
 - (void)jumpToHtml
 {
     
@@ -995,25 +963,23 @@
     
 }
 
-#pragma mark - 设置客户端界面
+#pragma mark -- 设置客户端界面
 - (void)interfaceSetUp
 {
     //自己加的
     /********************************************/
     self.tenTimerOpen = NO;//十秒定时器关闭，开启30秒定时器
     
-//    [mStartTaskBtn setHidden:YES];//开始任务隐藏
-//    [mWechatBtn setHidden:NO];//微信登录
-//    [mLogoImg setHidden:NO]; //登录前logo图片
-//    [mWechatHeadImg setHidden:YES]; //登录后微信头像
-    
-    //渐变色，圆角
+    // 渐变色
     CAGradientLayer *gradientLayer = [CAGradientLayer layer];
     gradientLayer.colors = @[(__bridge id)[UIColor colorWithRed:3/255.0 green:58/255.0 blue:255/255.0 alpha:1.0].CGColor,(__bridge id)[UIColor colorWithRed:188/255.0 green:188/255.0 blue:188/255.0 alpha:1.0].CGColor];
     gradientLayer.locations = @[@0.0,@1.0];
     gradientLayer.startPoint = CGPointMake(0, 0);
     gradientLayer.endPoint = CGPointMake(1.0, 0);
-    gradientLayer.frame = CGRectMake(0, 0, CGRectGetWidth(mWechatBtn.frame), CGRectGetHeight(mWechatBtn.frame));
+    gradientLayer.frame = CGRectMake(0,
+                                     0,
+                                     CGRectGetWidth(mWechatBtn.frame),
+                                     CGRectGetHeight(mWechatBtn.frame));
     gradientLayer.cornerRadius = 20;
     [mWechatBtn.layer addSublayer:gradientLayer];
     
@@ -1098,9 +1064,6 @@
 
     }
     
-//
-//    self.mLogoImg.layer.cornerRadius =
-    
     mWechatHeadImg.layer.masksToBounds = YES;
     //mHeaderImg.layer.masksToBounds = YES;
     
@@ -1178,7 +1141,7 @@
     
 }
 
-#pragma mark---- 经纬度
+#pragma mark -- 经纬度
 -(void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray<CLLocation *> *)locations{
     CLLocation *currLocation = [locations lastObject];
     float lat = currLocation.coordinate.latitude;
@@ -1187,9 +1150,6 @@
     //正值代表东经
     if (lat != 0 && lon != 0){
         NSString *string = [NSString stringWithFormat:@"您的当前位置为%f,%f",lat,lon];
-//        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"位置信息" message:string delegate:nil cancelButtonTitle:@"取消" otherButtonTitles:@"确认", nil];
-//        [alert show];
-        
         _eastNorthStr = [NSString stringWithFormat:@"%f|%f",lat,lon];
         NSLog(@"string---string----\n\n\n %@----_eastNorthStr---%@",string,_eastNorthStr);
         
@@ -1198,73 +1158,7 @@
     
     
 }
-
-- (IBAction)mStartTaskClick:(id)sender {
-    //开始任务
-    [self jumpToHtml];//去跳转到网页
-}
-
-#pragma mark -- private method
-- (UIImage *) drawImage
-{
-    //创建CGContextRef
-    UIGraphicsBeginImageContext(self.view.bounds.size);
-    CGContextRef gc = UIGraphicsGetCurrentContext();
-    
-    //创建CGMutablePathRef
-    CGMutablePathRef path = CGPathCreateMutable();
-    
-    //绘制Path
-    CGRect rect = CGRectMake(0, 100, 300, 200);
-    CGPathMoveToPoint(path, NULL, CGRectGetMinX(rect), CGRectGetMinY(rect));
-    CGPathAddLineToPoint(path, NULL, CGRectGetMidX(rect), CGRectGetMaxY(rect));
-    CGPathAddLineToPoint(path, NULL, CGRectGetWidth(rect), CGRectGetMaxY(rect));
-    CGPathCloseSubpath(path);
-    
-    //绘制渐变
-    [self drawLinearGradient:gc
-                        path:path
-                  startColor:[UIColor colorWithRed:17/255.0 green:95/255.0 blue:251/255.0 alpha:1.0].CGColor
-                    endColor:[UIColor colorWithRed:28/255.0 green:168/255.0 blue:252/255.0 alpha:1.0].CGColor];
-    
-    //注意释放CGMutablePathRef
-    CGPathRelease(path);
-    
-    //从Context中获取图像，并显示在界面上
-    UIImage *img = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    
-    return img;
-}
-
-- (void)drawLinearGradient:(CGContextRef)context
-                      path:(CGPathRef)path
-                startColor:(CGColorRef)startColor
-                  endColor:(CGColorRef)endColor
-{
-    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-    CGFloat locations[] = { 0.0, 1.0 };
-    
-    NSArray *colors = @[(__bridge id) startColor, (__bridge id) endColor];
-    
-    CGGradientRef gradient = CGGradientCreateWithColors(colorSpace, (__bridge CFArrayRef) colors, locations);
-    
-    
-    CGRect pathRect = CGPathGetBoundingBox(path);
-    
-    //具体方向可根据需求修改
-    CGPoint startPoint = CGPointMake(CGRectGetMinX(pathRect), CGRectGetMidY(pathRect));
-    CGPoint endPoint = CGPointMake(CGRectGetMaxX(pathRect), CGRectGetMidY(pathRect));
-    
-    CGContextSaveGState(context);
-    CGContextAddPath(context, path);
-    CGContextClip(context);
-    CGContextDrawLinearGradient(context, gradient, startPoint, endPoint, 0);
-    CGContextRestoreGState(context);
-    
-    CGGradientRelease(gradient);
-    CGColorSpaceRelease(colorSpace);
-}
+#pragma mark -- Notification
 
 - (void)didBecomeActive:(NSNotification *)notification
 {
@@ -1286,6 +1180,22 @@
         [mWechatBtn setHidden:true];
         [mStartTaskBtn setHidden:false];
     }
+}
+
+-(void)removeAllObjects{
+    NSLog(@"---------通知来了---火车开走了--------");
+}
+
+- (void)notificationNum
+{
+    UIApplication *application = [UIApplication sharedApplication];
+    [application setApplicationIconBadgeNumber:0];
+    
+    if ([[UIDevice currentDevice].systemVersion doubleValue] >= 8.0) {
+        UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeAlert | UIUserNotificationTypeBadge | UIUserNotificationTypeSound categories:nil];
+        [application registerUserNotificationSettings:settings];
+    }
+    
 }
 
 @end

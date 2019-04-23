@@ -43,21 +43,18 @@
     
     [self makeWindowVisible:launchOptions];
     
-    NSLog(@"--%@--",NSHomeDirectory());
-    NSLog(@" _____+++++++++______++++");
     //    NSString *udid = [AADeviceInfo udid];
     //    NSLog(@" udid:%@", udid);
-//    Class udidClass = NSClassFromString(@"AADeviceInfo"); //唯一标示符
-//    SEL udidSel = NSSelectorFromString(@"udid");
-//    //    NSString *udid = objc_msgSend(udidClass, udidSel);
-//    id aaa = [udidClass performSelector:udidSel];
-//    NSLog(@"---- udid:%@", aaa);
+    //    Class udidClass = NSClassFromString(@"AADeviceInfo"); //唯一标示符
+    //    SEL udidSel = NSSelectorFromString(@"udid");
+    //    NSString *udid = objc_msgSend(udidClass, udidSel);
+    //    id aaa = [udidClass performSelector:udidSel];
+    //    NSLog(@"---- udid:%@", aaa);
     
     //设备类型
     NSString *deviceModel = [[SystemServices sharedServices] deviceModel];
     //设备型号
     NSString *systemDeviceTypeFormatted = [[SystemServices sharedServices] systemDeviceTypeFormatted];
-    
     //设备系统版本
     NSString *systemsVersion = [[SystemServices sharedServices] systemsVersion];
     //手机名称
@@ -69,35 +66,15 @@
     //MCC编码
     NSString *MCC = [NSString stringWithFormat:@"%@%@", [[SystemServices sharedServices] carrierMobileCountryCode], [[SystemServices sharedServices] carrierMobileNetworkCode]];
     
-    
-    
-//    struct utsname systemInfo;
-//
-//    uname(&systemInfo);
-//
     NSString *deviceDeviceName = [[SystemServices sharedServices] getDeviceName];
-//
-    NSLog(@"d-----eviceDeviceName---->%@", deviceDeviceName);
-    
-    
-    //
+
     NSString *current = [[SystemServices sharedServices] carrierCountry];
     
-    
-     NSLog(@"---- 1:%@--- 2:%@--- 3:%@--- 4:%@--- 5:%@--- 6:%@-- 7:%@", deviceModel,systemDeviceTypeFormatted,systemsVersion,deviceName,carrierName,carrierCountry,MCC);
-    
-    
-    
-    
-    // 友盟
+    // 友盟 调微信登录
     [UMSocialData setAppKey:UmengAppkey];
-    
     UMConfigInstance.appKey = UmengAppkey;
     UMConfigInstance.channelId = @"App Store";
-    
     [MobClick startWithConfigure:UMConfigInstance]; //初始化友盟统计模块
-    
-    // 微信登陆 友盟调微信登录
 //    [UMSocialWechatHandler setWXAppId:WXAppId appSecret:WXAppSecret url:@"http://m.cmzqian.com"];
     [UMSocialWechatHandler setWXAppId:WXAppId appSecret:WXAppSecret url:@"https://m.angelmoney.cn"];
 
@@ -128,13 +105,9 @@
                                                           UIRemoteNotificationTypeSound |
                                                           UIRemoteNotificationTypeAlert)
                                               categories:nil];
-        
-//        [JPUSHService registerForRemoteNotificationTypes:(UIUserNotificationTypeBadge |
-//                                                          UIUserNotificationTypeSound |
-//                                                          UIUserNotificationTypeAlert)
-//                                              categories:nil];
-        
+
     }
+    
     //Required
     //如需继续使用pushConfig.plist文件声明appKey等配置内容，请依旧使用[JPUSHService setupWithOption:launchOptions]方式初始化。
 //    [JPUSHService setupWithOption:launchOptions appKey:JPushAppKey
@@ -231,7 +204,11 @@
         // 判断是否联网
         if(![self connectedToNetwork])
         {
-            UIAlertView *alert=[[UIAlertView alloc] initWithTitle:@"温馨提示" message:@"网络连接失败,请查看网络是否连接正常！" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            UIAlertView *alert=[[UIAlertView alloc] initWithTitle:@"温馨提示"
+                                                          message:@"网络连接失败,请查看网络是否连接正常！"
+                                                         delegate:self
+                                                cancelButtonTitle:@"OK"
+                                                otherButtonTitles:nil];
             [alert show];
         }else{
 //            NSString *urlString   = @"http://120.76.75.81:8085/mobileUser/userLogin4";
@@ -337,52 +314,19 @@
 }
 
 
-
-//-(BOOL)application:(UIApplication *)app
-//           openURL:(NSURL *)url
-//           options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options
-//{
-//
-//    NSLog(@"-url-%@-----%@---",url,options);
-
-//    NSMutableDictionary *dic =  [url.absoluteString parameterWithURL];
-
-
-//    NSString *urlStr  = [NSString stringWithFormat:@"%@", url];
-//    if ([urlStr hasPrefix:@"openAngelMApp:"]) {
-//        NSString *udid = [urlStr substringWithRange:NSMakeRange(36, 40)];
-//        NSLog(@"urlStr:%@ udid:%@", urlStr, udid);
-//
-//        if (udid && udid.length > 0) {
-//            [[NSUserDefaults standardUserDefaults] setObject:udid forKey:@"localudid"];
-//        }
-//    }
-//    NSString *udidstr = [self getParamByName:@"device" URLString:url.absoluteString];
-//    if (udidstr && udidstr.length > 0) {
-//        [[NSUserDefaults standardUserDefaults] setObject:udidstr  forKey:@"localudid"];
-//        [[NSUserDefaults standardUserDefaults] synchronize];
-//    }
-//
-//    NSLog(@"-udidstr----%@---",udidstr);
-
-
-//    return [WXApi handleOpenURL:url delegate:self];
-//}
-
-
 - (void)onReq:(BaseReq *)req{
     NSLog(@"-req----%@---",req);
 }
 
--(void)onResp:(BaseResp *)resp{
+-(void)onResp:(BaseResp *)resp
+{
     NSLog(@"-resp----%@---",resp);
-    if ([resp isKindOfClass:[SendAuthResp class]]) {
+    if ([resp isKindOfClass:[SendAuthResp class]])
+    {
         SendAuthResp *temp = (SendAuthResp *)resp;
         
-        
-        
         NSLog(@"--tempp--%@---",temp);
-         NSLog(@"--tempp--%@---",temp.code);
+        NSLog(@"--tempp--%@---",temp.code);
         NSString *WXLoginIDstr = temp.code;
         
         
@@ -395,7 +339,8 @@
     NSLog(@"-resp----%@---",[resp observationInfo]);
 }
 
-- (void)application:(UIApplication *)application handleEventsForBackgroundURLSession:(NSString *)identifier completionHandler:(void (^)(void))completionHandler{
+- (void)application:(UIApplication *)application handleEventsForBackgroundURLSession:(NSString *)identifier completionHandler:(void (^)(void))completionHandler
+{
     NSLog(@"-url-%@-------",identifier);
 }
 
@@ -417,60 +362,6 @@
     }
     return @"";
 }
-
-
-//-(NSDictionary *) parameterWithURL:(NSURL *) url {
-//
-//    NSMutableDictionary *parm = [[NSMutableDictionary alloc]init];
-//
-//    //传入url创建url组件类
-//    NSURLComponents *urlComponents = [[NSURLComponents alloc] initWithString:url.absoluteString];
-//
-//    //回调遍历所有参数，添加入字典
-//    [urlComponents.queryItems enumerateObjectsUsingBlock:^(NSURLQueryItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-//        [parm setObject:obj.value forKey:obj.name];
-//    }];
-//
-//    return parm;
-//}
-
-
-////MARK:WXApiDelegate
-//func application(_ application: UIApplication, handleOpen url: URL) -> Bool {
-//    // print("---url---\(url.absoluteString)")
-//    return  WXApi.handleOpen(url, delegate: PD_Share.shareInstance()) || QQApiInterface.handleOpen(url, delegate: QQShareManager.default())
-//}
-//
-//func application(_ application: UIApplication, open url: URL, sourceApplication: String?, annotation: Any) -> Bool {
-//    print("-delegate--url----\(url)")
-//    //        let openIdStr:String = url
-//    //        return WXApi.handleOpen(url, delegate: PD_Share.shareInstance()) || QQApiInterface.handleOpen(url, delegate: QQShareManager.default())
-//
-//    //        if (url.absoluteString.hasPrefix("jsmp:") || url.absoluteString.hasPrefix("cmqmobile:")) {
-//    //            //从浏览器打开APP，回调URL
-//    ////            decisionHandler(WKNavigationActionPolicy.cancel)
-//    ////            let parameterStr = URLString.replacingOccurrences(of: "jsmp://", with: "")
-//    ////            let replaceQuestionStr = parameterStr.replacingOccurrences(of: "?", with: "&")
-//    //            let delegate = UIApplication.shared.delegate as! AppDelegate
-//    //            let nav =  delegate.rootVC?.viewControllers![0] as! RootNavigationController
-//    //
-//    //            if url.absoluteString != "" {
-//    //                let controller = LocationController()
-//    //                controller.hidesBottomBarWhenPushed = true
-//    //                controller.model = HomeBannerModel(dict: ["location": url.absoluteString as AnyObject,"title": "test"  as AnyObject])
-//    //                nav.pushViewController(controller, animated: true)
-//    //            }
-//    //        }
-//
-//    let result = UMSocialManager.default().handleOpen(url, sourceApplication: sourceApplication, annotation: annotation)
-//
-//    print("----result---\(result)")
-//    if (!result) {
-//        // 其他如支付等SDK的回调
-//        print("----result---\(result)")
-//    }
-//    return result
-//}
 
 // 检测是否联网
 -(BOOL) connectedToNetwork
