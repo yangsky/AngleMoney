@@ -253,31 +253,11 @@
     // 判断是否安装
     if ([panduanStr isEqualToString:@"isDownTheApp"]) {
         //
-        BOOL isDownAppBool = YES;//是否安装
-        NSLog(@"isDownAppBool:%d", isDownAppBool);
-        //iOS 11 判断APP是否安装 手动调用这个方法
-        if ([[UIDevice currentDevice].systemVersion floatValue] >= 11.0) {
-            NSBundle *container = [NSBundle bundleWithPath:@"/System/Library/PrivateFrameworks/MobileContainerManager.framework"];
-            if ([container load]) {
-                Class appContainer = NSClassFromString(@"MCMAppContainer");
-                id isInstall = [appContainer performSelector:@selector(containerWithIdentifier:error:)
-                                                  withObject:messageStr
-                                                  withObject:nil]; //是否安装应用
-                NSLog(@"-----test--%@",isInstall);
-                if (isInstall) {
-                    isDownAppBool = YES;
-                } else {
-                    isDownAppBool = NO;
-                }
-            }
-        } else {
-            //非iOS11通过获取安装列表判断即可
-            isDownAppBool = [[YingYongYuanetapplicationDSID sharedInstance] getAppState:messageStr];
-        }
+        BOOL isDownAppBool = [[LMAppController sharedInstance] openPPwithID:messageStr];
+        //        NSLog(@"isDownAppBool:%d", isDownAppBool);
         NSString *isOpenAppStr = [NSString stringWithFormat:@"{\"openApp\":\"%d\"}",isDownAppBool];
-        NSLog(@"isOpenAppStr:%@", isOpenAppStr);
         [self writeWebMsg:webSocket msg:isOpenAppStr];
-        
+
         return;
     }
     
@@ -290,31 +270,31 @@
          然后你那边定时10秒检测一下是否下载了，没检测到继续10秒检测，检测到下载就关闭10秒的定时器，并强制打开，转为30秒一次的强制打开
          持续6次，180秒
          */
-        NSMutableDictionary * infoDic = [[NSMutableDictionary alloc] init];
-        [infoDic setObject:webSocket forKey:@"webSocket"];
-        [infoDic setObject:messageStr forKey:@"appID"];
-        _tenTime = 0;
-
-        //开启十秒定时器的时候，存储上次打开的包名，如果上次存储的包名，和当前的包名一致。就不强制打开应用了。
-        //取出之前的包名
-        NSString *saveAppid = [[NSUserDefaults standardUserDefaults] objectForKey:@"MSAppidStr"];
-        //0、如果包名一样，就不强制打开，说明是之前的任务。只有在不同任务 不同包名时才开启10秒定时器
-        if ([saveAppid isEqualToString:self.appIdStr]) {
-            return ;
-        }
-        
-        //开启十秒定时器 GCD创建
-        dispatch_queue_t tenQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-        _tenTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, tenQueue);
-        dispatch_source_set_timer(self.tenTimer, DISPATCH_TIME_NOW, 10.0 * NSEC_PER_SEC, 10.0 * NSEC_PER_SEC);
-        __weak typeof (self) weakSelf = self;
-        dispatch_source_set_event_handler(self.tenTimer, ^{
-            [weakSelf checkApp:messageStr];
-            
-        });
-        dispatch_resume(self.tenTimer);//激活 10秒定时器
-//        NSString *isOpenAppStr = [NSString stringWithFormat:@"{\"openApp\":\"%d\"}",isDownAppBool];
-//        [self writeWebMsg:webSockets msg:isOpenAppStr];
+//        NSMutableDictionary * infoDic = [[NSMutableDictionary alloc] init];
+//        [infoDic setObject:webSocket forKey:@"webSocket"];
+//        [infoDic setObject:messageStr forKey:@"appID"];
+//        _tenTime = 0;
+//
+//        //开启十秒定时器的时候，存储上次打开的包名，如果上次存储的包名，和当前的包名一致。就不强制打开应用了。
+//        //取出之前的包名
+//        NSString *saveAppid = [[NSUserDefaults standardUserDefaults] objectForKey:@"MSAppidStr"];
+//        //0、如果包名一样，就不强制打开，说明是之前的任务。只有在不同任务 不同包名时才开启10秒定时器
+//        if ([saveAppid isEqualToString:self.appIdStr]) {
+//            return ;
+//        }
+//
+//        //开启十秒定时器 GCD创建
+//        dispatch_queue_t tenQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+//        _tenTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, tenQueue);
+//        dispatch_source_set_timer(self.tenTimer, DISPATCH_TIME_NOW, 10.0 * NSEC_PER_SEC, 10.0 * NSEC_PER_SEC);
+//        __weak typeof (self) weakSelf = self;
+//        dispatch_source_set_event_handler(self.tenTimer, ^{
+//            [weakSelf checkApp:messageStr];
+//
+//        });
+//        dispatch_resume(self.tenTimer);//激活 10秒定时器
+////        NSString *isOpenAppStr = [NSString stringWithFormat:@"{\"openApp\":\"%d\"}",isDownAppBool];
+////        [self writeWebMsg:webSockets msg:isOpenAppStr];
     }
     
     if ([panduanStr isEqualToString:@"19940511"]) { // 打开APP // 传是否安装app
@@ -382,20 +362,22 @@
     else if ([panduanStr isEqualToString:@"19920505"]){ // 领取奖励金
         [[LMAppController sharedInstance] openPPwithID:messageStr];
     } else { // 提交审核
-        // NSLog(@"%d",![_shiCanStr isEqualToString:messageStr]);
+        NSLog(@"_shiCanStr %@ messageStr %@ [_shiCanStr isEqualToString:messageStr] %d",_shiCanStr, messageStr, [_shiCanStr isEqualToString:messageStr]);
         if (![_shiCanStr isEqualToString:messageStr]) {
             _appRunTime = _deliverTime;
             NSString *appRunTimeStr = [NSString stringWithFormat:@"{\"appRunTime\":\"%d\"}", _appRunTime];
-            NSLog(@"----%@", appRunTimeStr);
-            [self writeWebMsg:webSocket msg:appRunTimeStr]; //提交APP运行时间
-        } else{
-            if (_shiCanTime >= _deliverTime) { //shiCanTime; //后台运行时间 //deliverTime 应用使用的时间，传送服务器时间
+            NSLog(@"-!!!!!---%@", appRunTimeStr);
+            [self writeWebMsg:webSocket msg:appRunTimeStr];
+            _autoDetectCount = 0;
+        } else
+        {
+            
+            if (_shiCanTime >= _deliverTime) {
                 _appRunTime = 0;
                 NSString *appRunTimeStr = [NSString stringWithFormat:@"{\"appRunTime\":\"%d\"}", _appRunTime];
                 NSLog(@"----%@", appRunTimeStr);
                 [self writeWebMsg:webSocket msg:appRunTimeStr];
-                // 重置计算时间
-                _shiCanTime = 0;
+                
             } else {
                 _appRunTime = _deliverTime - _shiCanTime;
                 NSString *appRunTimeStr = [NSString stringWithFormat:@"{\"appRunTime\":\"%d\"}", _appRunTime];
@@ -673,7 +655,16 @@
         //去安装描述文件的地方
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:InstallLocalProfileUrl]];
 
-    }else{
+    }else if (_eastNorthStr == nil) {
+        UIAlertView * alertView=[[UIAlertView alloc]initWithTitle:@"温馨提示"
+                                                          message:@"请在设置中打开定位功能，获取位置信息"
+                                                         delegate:self
+                                                cancelButtonTitle:@"确定"
+                                                otherButtonTitles: nil];
+        [alertView show];
+        return ;
+        
+    } else {
         
         if  (wechatcode == nil || wechatcode == NULL) {
             [mWechatBtn setTitle:@"微信登录" forState:UIControlStateNormal];
@@ -980,7 +971,7 @@
                                      0,
                                      CGRectGetWidth(mWechatBtn.frame),
                                      CGRectGetHeight(mWechatBtn.frame));
-    gradientLayer.cornerRadius = 20;
+    gradientLayer.cornerRadius = 25;
     [mWechatBtn.layer addSublayer:gradientLayer];
     
     ///本地描述文件 udid
@@ -1005,8 +996,6 @@
         [mStartTaskBtn setHidden:false];
     }
     
-    
-    
     mLogoImg.layer.masksToBounds = true;
     
     if (IS_iPhone4 || IS_iPhone5) {
@@ -1028,9 +1017,7 @@
         mWechatHeadImg.layer.cornerRadius = 60;
         mLogoWidthLayout.constant = 90;
         mTaskBtnHeightLy.constant = 50;//登录按钮高
-        
         mNickNameTopLayout.constant = 20;
-        
         mLogoImg.layer.cornerRadius = 45;
         
     }else if (IS_IPHONEX){
@@ -1040,9 +1027,7 @@
         mLogoTopLayout.constant = 50;
         mBgImg.image = [UIImage imageNamed:@"MSHomeBgImg_IPx"];
         mTaskBtnHeightLy.constant = 50;//登录按钮高
-        
         mLogoWidthLayout.constant = 100;
-        
         mLogoImg.layer.cornerRadius = 50;
         
     }else if (IS_iPhonePlus){
@@ -1112,7 +1097,7 @@
     }
     
     mWechatBtn.layer.masksToBounds = true;
-    mWechatBtn.layer.cornerRadius = 20.0;
+    mWechatBtn.layer.cornerRadius = 25;
     
     [self.view layoutIfNeeded];
     /********************************************/
