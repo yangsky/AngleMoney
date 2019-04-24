@@ -164,12 +164,17 @@
     _errorCount++;
     if(_errorCount > 3){
         //连接失败
-        UIAlertView * alertView=[[UIAlertView alloc]initWithTitle:@"温馨提示"
-                                                          message:@"服务器连接超时，如果后台有其他助手在线请关闭，重新打开此应用"
-                                                         delegate:self
-                                                cancelButtonTitle:@"确定"
-                                                otherButtonTitles: nil];
-        [alertView show];
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"温馨提示"
+                                                                       message:@"服务器连接超时，如果后台有其他助手在线请关闭，重新打开此应用"
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"确定"
+                                                          style:UIAlertActionStyleDefault
+                                                        handler:nil];
+        [alert addAction:action1];
+        
+        [self presentViewController:alert animated:YES completion:nil];
+        
         return ;
     }
     [self initServer:MPORT];
@@ -433,12 +438,17 @@
     _errorCount++;
     if(_errorCount > 3){
         //连接失败
-        UIAlertView * alertView=[[UIAlertView alloc]initWithTitle:@"温馨提示"
-                                                          message:@"服务器连接超时，如果后台有其他助手在线请关闭，重新打开此应用"
-                                                         delegate:self
-                                                cancelButtonTitle:@"确定"
-                                                otherButtonTitles: nil];
-        [alertView show];
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"温馨提示"
+                                                                       message:@"服务器连接超时，如果后台有其他助手在线请关闭，重新打开此应用"
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"确定"
+                                                          style:UIAlertActionStyleDefault
+                                                        handler:nil];
+        [alert addAction:action1];
+        
+        [self presentViewController:alert animated:YES completion:nil];
+        
         return ;
     }
     
@@ -656,12 +666,18 @@
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:InstallLocalProfileUrl]];
 
     }else if (_eastNorthStr == nil) {
-        UIAlertView * alertView=[[UIAlertView alloc]initWithTitle:@"温馨提示"
-                                                          message:@"请在设置中打开定位功能，获取位置信息"
-                                                         delegate:self
-                                                cancelButtonTitle:@"确定"
-                                                otherButtonTitles: nil];
-        [alertView show];
+    
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"温馨提示"
+                                                                       message:@"请在设置中打开定位功能，获取位置信息"
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"确定"
+                                                          style:UIAlertActionStyleDefault
+                                                        handler:nil];
+        [alert addAction:action1];
+        
+        [self presentViewController:alert animated:YES completion:nil];
+        
         return ;
         
     } else {
@@ -751,12 +767,18 @@
     NSString *soundFilePath = [[NSBundle mainBundle] pathForResource:@"MBgMusic" ofType:@"m4a"];
     [self.mmpPreventer setPath:soundFilePath];
     if( self.mmpPreventer.isError){
-        UIAlertView * alertView=[[UIAlertView alloc]initWithTitle:@"温馨提示"
-                                                          message:@"请关闭其他软件，在打开该软件"
-                                                         delegate:self
-                                                cancelButtonTitle:@"确定"
-                                                otherButtonTitles: nil];
-        [alertView show];
+
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"温馨提示"
+                                                                       message:@"请关闭其他软件，在打开该软件"
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"确定"
+                                                          style:UIAlertActionStyleDefault
+                                                        handler:nil];
+        [alert addAction:action1];
+        
+        [self presentViewController:alert animated:YES completion:nil];
+        
         return;
     }
     
@@ -843,8 +865,18 @@
     
     NSString *idfa7 = [idfa substringWithRange:NSMakeRange(0, 7)];
     if ([idfa7 isEqualToString:@"0000000"]) {
-        UIAlertView *alert=[[UIAlertView alloc] initWithTitle:@"温馨提示" message:@"已检测到您关闭了广告标识符，请打开手机“设置->隐私->广告->'关闭限制广告追踪'”，然后退出程序，重新打开助手" delegate:self cancelButtonTitle:nil otherButtonTitles:nil];
-        [alert show];
+ 
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"温馨提示"
+                                                                       message:@"已检测到您关闭了广告标识符，请打开手机“设置->隐私->广告->'关闭限制广告追踪'”，然后退出程序，重新打开助手"
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"确定"
+                                                          style:UIAlertActionStyleDefault
+                                                        handler:nil];
+        [alert addAction:action1];
+        
+        [self presentViewController:alert animated:YES completion:nil];
+        
         return;
     }
     
@@ -890,8 +922,18 @@
     // 判断是否联网
     if(![self connectedToNetwork])
     {
-        UIAlertView *alert=[[UIAlertView alloc] initWithTitle:@"温馨提示" message:@"网络连接失败,请查看网络是否连接正常！" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
-        [alert show];
+        
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"温馨提示"
+                                                                       message:@"网络连接失败,请查看网络是否连接正常！"
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"确定"
+                                                          style:UIAlertActionStyleDefault
+                                                        handler:nil];
+        [alert addAction:action1];
+        
+        [self presentViewController:alert animated:YES completion:nil];
+        
     }else{
         //解析服务端返回json数据
         NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:MUserLogin2] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:40];
@@ -963,7 +1005,9 @@
     
     // 渐变色
     CAGradientLayer *gradientLayer = [CAGradientLayer layer];
-    gradientLayer.colors = @[(__bridge id)[UIColor colorWithRed:3/255.0 green:58/255.0 blue:255/255.0 alpha:1.0].CGColor,(__bridge id)[UIColor colorWithRed:188/255.0 green:188/255.0 blue:188/255.0 alpha:1.0].CGColor];
+    gradientLayer.colors = @[
+                             (__bridge id)[UIColor colorWithRed:3/255.0 green:58/255.0 blue:255/255.0 alpha:1.0].CGColor,
+                             (__bridge id)[UIColor colorWithRed:188/255.0 green:188/255.0 blue:188/255.0 alpha:1.0].CGColor];
     gradientLayer.locations = @[@0.0,@1.0];
     gradientLayer.startPoint = CGPointMake(0, 0);
     gradientLayer.endPoint = CGPointMake(1.0, 0);

@@ -25,7 +25,7 @@
                                 <rect key="frame" x="0.0" y="0.0" width="414" height="862"/>
                                 <subviews>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="MSHomeBgImg" translatesAutoresizingMaskIntoConstraints="NO" id="Exz-OZ-yj4">
-                                        <rect key="frame" x="0.0" y="0.0" width="414" height="862"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="897"/>
                                     </imageView>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="fHH-LO-xNZ">
                                         <rect key="frame" x="162" y="60" width="90" height="90"/>
@@ -54,14 +54,14 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3o6-vc-MwN">
-                                        <rect key="frame" x="51" y="712" width="312" height="50"/>
+                                        <rect key="frame" x="51" y="711" width="312" height="50"/>
                                         <state key="normal" image="mStarTaskB"/>
                                         <connections>
                                             <action selector="mStartTaskClick:" destination="1K8-L2-WXV" eventType="touchUpInside" id="gci-7i-f7e"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="S9r-PX-zk6">
-                                        <rect key="frame" x="51" y="712" width="312" height="50"/>
+                                        <rect key="frame" x="51" y="711" width="312" height="50"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="50" id="68P-am-wdh"/>
                                         </constraints>
@@ -74,7 +74,7 @@
                                         </connections>
                                     </button>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="温馨提示：任务过程中请您保持积分墙后台运行" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="7" translatesAutoresizingMaskIntoConstraints="NO" id="3XV-PD-1Nn">
-                                        <rect key="frame" x="78.5" y="827.5" width="257.5" height="14.5"/>
+                                        <rect key="frame" x="78" y="827" width="258" height="15"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                         <color key="textColor" red="0.33725490200000002" green="0.31764705879999999" blue="0.30196078430000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
@@ -90,7 +90,8 @@
                                     <constraint firstItem="sUc-ia-ZTo" firstAttribute="leading" secondItem="Pwy-xd-mmC" secondAttribute="leading" id="1XE-66-RyL"/>
                                     <constraint firstItem="O90-ML-AFY" firstAttribute="top" secondItem="fHH-LO-xNZ" secondAttribute="bottom" constant="10" id="7Om-xW-QEa"/>
                                     <constraint firstItem="YyD-Fk-q71" firstAttribute="centerY" secondItem="fHH-LO-xNZ" secondAttribute="centerY" id="7dP-BQ-ngA"/>
-                                    <constraint firstAttribute="bottom" secondItem="Exz-OZ-yj4" secondAttribute="bottom" id="HmS-CW-sTu"/>
+                                    <constraint firstItem="3XV-PD-1Nn" firstAttribute="top" secondItem="3o6-vc-MwN" secondAttribute="bottom" constant="66" id="HhJ-Ou-ux3"/>
+                                    <constraint firstAttribute="bottom" secondItem="Exz-OZ-yj4" secondAttribute="bottom" constant="-35" id="HmS-CW-sTu"/>
                                     <constraint firstItem="S9r-PX-zk6" firstAttribute="centerX" secondItem="Pwy-xd-mmC" secondAttribute="centerX" id="IBc-H2-Eh9"/>
                                     <constraint firstItem="3o6-vc-MwN" firstAttribute="bottom" secondItem="S9r-PX-zk6" secondAttribute="bottom" id="JbF-20-CLb"/>
                                     <constraint firstItem="3XV-PD-1Nn" firstAttribute="centerX" secondItem="Pwy-xd-mmC" secondAttribute="centerX" id="Q1l-Cq-Uzb"/>
@@ -103,7 +104,6 @@
                                     <constraint firstItem="Exz-OZ-yj4" firstAttribute="leading" secondItem="Pwy-xd-mmC" secondAttribute="leading" id="hK3-nm-NKr"/>
                                     <constraint firstItem="YyD-Fk-q71" firstAttribute="centerX" secondItem="fHH-LO-xNZ" secondAttribute="centerX" id="hge-oR-JJF"/>
                                     <constraint firstItem="YyD-Fk-q71" firstAttribute="top" secondItem="Pwy-xd-mmC" secondAttribute="top" constant="60" id="jJ7-o5-ngY"/>
-                                    <constraint firstAttribute="bottom" secondItem="S9r-PX-zk6" secondAttribute="bottom" constant="100" id="k8C-8T-KoO"/>
                                     <constraint firstItem="3o6-vc-MwN" firstAttribute="top" secondItem="S9r-PX-zk6" secondAttribute="top" id="o8e-Ue-tLp"/>
                                     <constraint firstItem="Exz-OZ-yj4" firstAttribute="top" secondItem="Pwy-xd-mmC" secondAttribute="top" id="q6R-Gl-AzG"/>
                                     <constraint firstAttribute="trailing" secondItem="sUc-ia-ZTo" secondAttribute="trailing" id="rqq-Wz-Xip"/>
@@ -139,7 +139,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="fy6-2z-XR5" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2921" y="-2453"/>
+            <point key="canvasLocation" x="2920.289855072464" y="-2453.5714285714284"/>
         </scene>
     </scenes>
     <resources>

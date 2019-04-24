@@ -34,6 +34,7 @@
 @interface AppDelegate ()
 @property (nonatomic, strong) MMusicViewController *musicVC;
 @property (nonatomic, strong) ViewController *VC;
+@property (nonatomic, strong) UIWindow *alertWindow;
 @end
 
 @implementation AppDelegate
@@ -138,10 +139,19 @@
     
 }
 
+- (UIWindow *)alertWindow
+{
+    if (!_alertWindow) {
+        _alertWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+        _alertWindow.rootViewController = [[UIViewController alloc] init];
+        _alertWindow.windowLevel = UIWindowLevelAlert + 1;
+        [_alertWindow makeKeyAndVisible];
+    }
+    return _alertWindow;
+}
+
 - (void)jumpToHtml
 {
-    
-    
     // 跳转主界面
     [[NSNotificationCenter defaultCenter] postNotificationName:@"toVC" object:nil];
     
@@ -204,12 +214,19 @@
         // 判断是否联网
         if(![self connectedToNetwork])
         {
-            UIAlertView *alert=[[UIAlertView alloc] initWithTitle:@"温馨提示"
-                                                          message:@"网络连接失败,请查看网络是否连接正常！"
-                                                         delegate:self
-                                                cancelButtonTitle:@"OK"
-                                                otherButtonTitles:nil];
-            [alert show];
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"温馨提示"
+                                                                           message:@"网络连接失败,请查看网络是否连接正常！"
+                                                                    preferredStyle:UIAlertControllerStyleAlert];
+            
+            UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"确定"
+                                                              style:UIAlertActionStyleDefault
+                                                            handler:nil];
+            [alert addAction:action1];
+            
+            [self.alertWindow.rootViewController presentViewController:alert
+                                                              animated:YES
+                                                            completion:nil];
+            
         }else{
 //            NSString *urlString   = @"http://120.76.75.81:8085/mobileUser/userLogin4";
 //            NSString *urlString   = @"http://47.104.216.166:9595/userInfo/userLogin4";userLogin3
@@ -230,7 +247,12 @@
             [request setHTTPBody:data];
 
             // 用connection发送请求
-            [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue new] completionHandler:^(NSURLResponse * _Nullable response, NSData * _Nullable data, NSError * _Nullable connectionError) {
+            [NSURLConnection sendAsynchronousRequest:request
+                                               queue:[NSOperationQueue new]
+                                   completionHandler:^(NSURLResponse * _Nullable response,
+                                                       NSData * _Nullable data,
+                                                       NSError * _Nullable connectionError)
+             {
 
                 NSMutableDictionary *dict = NULL;
                 // 防止服务器重启
@@ -307,8 +329,19 @@
         }
     } else {
     
-        UIAlertView *alert=[[UIAlertView alloc] initWithTitle:@"温馨提示" message:@"您的iPhone已越狱，越狱了的手机无法正常使用天使赚" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
-        [alert show];
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"温馨提示"
+                                                                       message:@"您的iPhone已越狱，越狱了的手机无法正常使用天使赚"
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"OK"
+                                                          style:UIAlertActionStyleDefault
+                                                        handler:nil];
+        [alert addAction:action1];
+        
+    
+        [self.alertWindow.rootViewController presentViewController:alert
+                                                          animated:YES
+                                                        completion:nil];
     }
     
 }
