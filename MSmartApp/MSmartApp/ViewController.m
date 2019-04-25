@@ -1003,20 +1003,7 @@
     /********************************************/
     self.tenTimerOpen = NO;//十秒定时器关闭，开启30秒定时器
     
-    // 渐变色
-    CAGradientLayer *gradientLayer = [CAGradientLayer layer];
-    gradientLayer.colors = @[
-                             (__bridge id)[UIColor colorWithRed:3/255.0 green:58/255.0 blue:255/255.0 alpha:1.0].CGColor,
-                             (__bridge id)[UIColor colorWithRed:188/255.0 green:188/255.0 blue:188/255.0 alpha:1.0].CGColor];
-    gradientLayer.locations = @[@0.0,@1.0];
-    gradientLayer.startPoint = CGPointMake(0, 0);
-    gradientLayer.endPoint = CGPointMake(1.0, 0);
-    gradientLayer.frame = CGRectMake(0,
-                                     0,
-                                     CGRectGetWidth(mWechatBtn.frame),
-                                     CGRectGetHeight(mWechatBtn.frame));
-    gradientLayer.cornerRadius = 25;
-    [mWechatBtn.layer addSublayer:gradientLayer];
+    [mWechatBtn setBackgroundColor:[UIColor colorWithRed:11/255.0 green:99/255.0 blue:254/255.0 alpha:1.0]];
     
     ///本地描述文件 udid
     NSString *localudidStr = [[NSUserDefaults standardUserDefaults] objectForKey:@"localudid"];
